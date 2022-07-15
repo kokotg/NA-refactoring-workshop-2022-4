@@ -43,12 +43,24 @@ void SnakeWorld::setFoodPosition(std::pair<int, int> pos){
     m_foodPosition = pos;
 }
 
+std::list<Segment>& SnakeSegment::getSegments()
+{
+    return m_segments;
+}
+
+void SnakeSegment::setSegments(std::list<Segment>& segments)
+{
+    m_segments = segments;
+}
+
+
 Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort, std::string const& p_config)
     : m_displayPort(p_displayPort),
       m_scorePort(p_scorePort),
       m_paused(false)
 {
     snakeWorld = std::make_unique<SnakeWorld>(p_foodPort);
+    snakeSegment = std::make_unique<SnakeSegment>();
     std::istringstream istr(p_config);
     char w, f, s, d;
 
@@ -82,7 +94,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
         while (length--) {
             Segment seg;
             istr >> seg.x >> seg.y;
-            m_segments.push_back(seg);
+            snakeSegment->getSegments().push_back(seg);
         }
     } else {
         throw ConfigurationError();
@@ -91,13 +103,13 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
 
 bool Controller::isSegmentAtPosition(int x, int y) const
 {
-    return m_segments.end() !=  std::find_if(m_segments.cbegin(), m_segments.cend(),
+    return snakeSegment->getSegments().end() !=  std::find_if(snakeSegment->getSegments().cbegin(), snakeSegment->getSegments().cend(),
         [x, y](auto const& segment){ return segment.x == x and segment.y == y; });
 }
 
-bool Controller::isPositionOutsideMap(int x, int y) const
+bool SnakeWorld::isPositionOutsideMap(int x, int y) const
 {
-    return x < 0 or y < 0 or x >= snakeWorld->getMapDimension().first or y >= snakeWorld->getMapDimension().second;
+    return x < 0 or y < 0 or x >= m_mapDimension.first or y >= m_mapDimension.second;
 }
 
 void Controller::sendPlaceNewFood(int x, int y)
@@ -146,9 +158,9 @@ bool perpendicular(Direction dir1, Direction dir2)
 }
 } // namespace
 
-Controller::Segment Controller::calculateNewHead() const
+Segment Controller::calculateNewHead() const
 {
-    Segment const& currentHead = m_segments.front();
+    Segment const& currentHead = snakeSegment->getSegments().front();
 
     Segment newHead;
     newHead.x = currentHead.x + (isHorizontal(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
@@ -159,7 +171,7 @@ Controller::Segment Controller::calculateNewHead() const
 
 void Controller::removeTailSegment()
 {
-    auto tail = m_segments.back();
+    auto tail = snakeSegment->getSegments().back();
 
     DisplayInd l_evt;
     l_evt.x = tail.x;
@@ -167,12 +179,12 @@ void Controller::removeTailSegment()
     l_evt.value = Cell_FREE;
     m_displayPort.send(std::make_unique<EventT<DisplayInd>>(l_evt));
 
-    m_segments.pop_back();
+    snakeSegment->getSegments().pop_back();
 }
 
 void Controller::addHeadSegment(Segment const& newHead)
 {
-    m_segments.push_front(newHead);
+    snakeSegment->getSegments().push_front(newHead);
 
     DisplayInd placeNewHead;
     placeNewHead.x = newHead.x;
@@ -194,7 +206,7 @@ void Controller::removeTailSegmentIfNotScored(Segment const& newHead)
 
 void Controller::updateSegmentsIfSuccessfullMove(Segment const& newHead)
 {
-    if (isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
+    if (isSegmentAtPosition(newHead.x, newHead.y) or snakeWorld->isPositionOutsideMap(newHead.x, newHead.y)) {
         m_scorePort.send(std::make_unique<EventT<LooseInd>>());
     } else {
         addHeadSegment(newHead);
@@ -218,7 +230,7 @@ void Controller::handleDirectionInd(std::unique_ptr<Event> e)
 
 void Controller::updateFoodPosition(int x, int y, std::function<void()> clearPolicy)
 {
-    if (isSegmentAtPosition(x, y) || isPositionOutsideMap(x,y)) {
+    if (isSegmentAtPosition(x, y) || snakeWorld->isPositionOutsideMap(x,y)) {
         snakeWorld->getFoodPort().send(std::make_unique<EventT<FoodReq>>());
         return;
     }
