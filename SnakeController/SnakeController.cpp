@@ -18,50 +18,6 @@ UnexpectedEventException::UnexpectedEventException()
 
 Controller::Controller()
 {
-    // // world.m_displayPort(p_displayPort);
-    // // world.m_foodPort(p_foodPort);
-    // // world.m_scorePort(p_scorePort);
-    // // bool m_paused(false);
-
-    // // std::istringstream istr(p_config);
-    // // char w, f, s, d;
-
-    // // int width, height, length;
-    // // int foodX, foodY;
-    // // istr >> w >> width >> height >> f >> foodX >> foodY >> s;
-
-    // // if (w == 'W' and f == 'F' and s == 'S') {
-    // //     world.m_mapDimension = std::make_pair(width, height);
-    // //     world.m_foodPosition = std::make_pair(foodX, foodY);
-
-    // //     istr >> d;
-    // //     switch (d) {
-    // //         case 'U':
-    // //             segments.m_currentDirection = Direction_UP;
-    // //             break;
-    // //         case 'D':
-    // //             segments.m_currentDirection = Direction_DOWN;
-    // //             break;
-    // //         case 'L':
-    // //             segments.m_currentDirection = Direction_LEFT;
-    // //             break;
-    // //         case 'R':
-    // //             segments.m_currentDirection = Direction_RIGHT;
-    // //             break;
-    // //         default:
-    // //             throw ConfigurationError();
-    // //     }
-    // //     istr >> length;
-
-    // //     while (length--) {
-    // //         SnakeSegments::Segment seg;
-    // //         istr >> seg.x >> seg.y;
-    // //         segments.m_segments.push_back(seg);
-    // //         segments.score++;
-    // //     }
-    // } else {
-    //     throw ConfigurationError();
-    //}
 }
 
 
