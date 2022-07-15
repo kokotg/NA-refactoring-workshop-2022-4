@@ -27,6 +27,8 @@ class SnakeWorld
 {
     private:
         IPort& m_foodPort;
+        std::pair<int, int> m_mapDimension;
+        std::pair<int, int> m_foodPosition;
 
 
     public:
@@ -34,6 +36,13 @@ class SnakeWorld
 
     // getters
         IPort& getFoodPort();
+        std::pair<int, int> getMapDimension();
+        std::pair<int, int> getFoodPosition();
+
+    // setters
+        void setMapDimension(std::pair<int, int> dim);
+        void setFoodPosition(std::pair<int, int> pos);
+
 
 };
 
@@ -55,8 +64,6 @@ private:
     IPort& m_displayPort;
     IPort& m_scorePort;
 
-    std::pair<int, int> m_mapDimension;
-    std::pair<int, int> m_foodPosition;
 
     struct Segment
     {
