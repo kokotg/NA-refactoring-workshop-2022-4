@@ -34,21 +34,24 @@ public:
     void receive(std::unique_ptr<Event> e) override;
 
 private:
-    IPort& m_displayPort;
-    IPort& m_foodPort;
-    IPort& m_scorePort;
 
-    std::pair<int, int> m_mapDimension;
-    std::pair<int, int> m_foodPosition;
+    SnakeSegments segments;
+    SnakeWorld world;
+    // IPort& m_displayPort;
+    // IPort& m_foodPort;
+    // IPort& m_scorePort;
 
-    struct Segment
-    {
-        int x;
-        int y;
-    };
+    // std::pair<int, int> m_mapDimension;
+    // std::pair<int, int> m_foodPosition;
 
-    std::list<Segment> m_segments;
-    Direction m_currentDirection;
+    // struct Segment
+    // {
+    //     int x;
+    //     int y;
+    // };
+
+    // std::list<Segment> m_segments;
+    // Direction m_currentDirection;
 
     void handleTimeoutInd();
     void handleDirectionInd(std::unique_ptr<Event>);
@@ -57,10 +60,10 @@ private:
     void handlePauseInd(std::unique_ptr<Event>);
 
     bool isSegmentAtPosition(int x, int y) const;
-    Segment calculateNewHead() const;
-    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
-    void addHeadSegment(Segment const& newHead);
-    void removeTailSegmentIfNotScored(Segment const& newHead);
+    SnakeSegments::Segment calculateNewHead() const;
+    void updateSegmentsIfSuccessfullMove(SnakeSegments::Segment const& newHead);
+    void addHeadSegment(SnakeSegments::Segment  const& newHead);
+    void removeTailSegmentIfNotScored(SnakeSegments::Segment const& newHead);
     void removeTailSegment();
 
     bool isPositionOutsideMap(int x, int y) const;
@@ -83,10 +86,12 @@ struct Segment
 
     std::list<Segment> m_segments;
     Direction m_currentDirection;
+    int score = 0;
 };
 
 class SnakeWorld
 {
+    public:
     IPort& m_displayPort;
     IPort& m_foodPort;
     IPort& m_scorePort;
