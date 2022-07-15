@@ -23,10 +23,7 @@ namespace Snake {
 
     }
 
-    std::__list_const_iterator<Segment, std::__list_imp<Segment, std::allocator<Segment>>::__alloc_traits::void_pointer>
-    SnakeSegments::cend() const noexcept {
-        return m_segments.cend();
-    }
+
 
     Segment SnakeSegments::front() const {
         return m_segments.front();
@@ -36,13 +33,6 @@ namespace Snake {
         return m_segments.back();
     }
 
-    void SnakeSegments::pop_back() {
-        m_segments.pop_back();
-    }
-
-    void SnakeSegments::push_front(const Segment &segment) {
-        m_segments.push_front(segment);
-    }
 
     bool SnakeSegments::isSegmentAtPosition(int x, int y) const {
         return m_segments.end() !=  std::find_if(m_segments.cbegin(), m_segments.cend(),

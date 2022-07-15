@@ -19,9 +19,7 @@ namespace Snake {
 
     }
 
-    std::pair<int, int> SnakeWorld::getMapDimensions()const {
-        return m_mapDimension;
-    }
+
 
     std::pair<int, int> SnakeWorld::getFoodPosition()  const {
         return m_foodPosition;

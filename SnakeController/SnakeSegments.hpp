@@ -23,14 +23,11 @@ namespace Snake {
         std::__list_const_iterator<Segment, void *> end() const;
         std::__list_const_iterator<Segment, std::__list_imp<Segment, std::allocator<Segment>>::__alloc_traits::void_pointer > cbegin() const noexcept;
 
-        std::__list_const_iterator<Segment, std::__list_imp<Segment, std::allocator<Segment>>::__alloc_traits::void_pointer>
-        cend() const noexcept;
+
 
         Segment front() const;
         Segment back() const;
-        void pop_back();
 
-        void push_front(const Segment &segment);
 
         bool isSegmentAtPosition(int x, int y) const;
 
