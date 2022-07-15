@@ -1,4 +1,5 @@
 #include "SnakeController.hpp"
+#include "SnakeSegments.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -36,16 +37,16 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
         istr >> d;
         switch (d) {
             case 'U':
-                m_currentDirection = Direction_UP;
+                m_SnakeSegments.m_currentDirection = Direction_UP;
                 break;
             case 'D':
-                m_currentDirection = Direction_DOWN;
+                m_SnakeSegments.m_currentDirection = Direction_DOWN;
                 break;
             case 'L':
-                m_currentDirection = Direction_LEFT;
+                m_SnakeSegments.m_currentDirection = Direction_LEFT;
                 break;
             case 'R':
-                m_currentDirection = Direction_RIGHT;
+                m_SnakeSegments.m_currentDirection = Direction_RIGHT;
                 break;
             default:
                 throw ConfigurationError();
@@ -62,11 +63,11 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
     }
 }
 
-bool Controller::isSegmentAtPosition(int x, int y) const
-{
-    return m_SnakeSegments.m_segments.end() !=  std::find_if(m_SnakeSegments.m_segments.cbegin(), m_SnakeSegments.m_segments.cend(),
-        [x, y](auto const& segment){ return segment.x == x and segment.y == y; });
-}
+// bool Controller::isSegmentAtPosition(int x, int y) const
+// {
+//     return m_SnakeSegments.m_segments.end() !=  std::find_if(m_SnakeSegments.m_segments.cbegin(), m_SnakeSegments.m_segments.cend(),
+//         [x, y](auto const& segment){ return segment.x == x and segment.y == y; });
+// }
 
 bool Controller::isPositionOutsideMap(int x, int y) const
 {
@@ -124,10 +125,11 @@ SnakeSegments::Segment Controller::calculateNewHead() const
     SnakeSegments::Segment const& currentHead = m_SnakeSegments.m_segments.front();
 
     SnakeSegments::Segment newHead;
-    newHead.x = currentHead.x + (isHorizontal(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
-    newHead.y = currentHead.y + (isVertical(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
+    newHead.x = currentHead.x + (isHorizontal(m_SnakeSegments.m_currentDirection) ? isPositive(m_SnakeSegments.m_currentDirection) ? 1 : -1 : 0);
+    newHead.y = currentHead.y + (isVertical(m_SnakeSegments.m_currentDirection) ? isPositive(m_SnakeSegments.m_currentDirection) ? 1 : -1 : 0);
 
     return newHead;
+
 }
 
 void Controller::removeTailSegment()
@@ -168,7 +170,7 @@ void Controller::removeTailSegmentIfNotScored(SnakeSegments::Segment const& newH
 
 void Controller::updateSegmentsIfSuccessfullMove(SnakeSegments::Segment const& newHead)
 {
-    if (isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
+    if (m_SnakeSegments.isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
         m_scorePort.send(std::make_unique<EventT<LooseInd>>());
         m_scorePort.send(std::make_unique<EventT<ScoreInd>>(ScoreInd(0,false)));
     } else {
@@ -186,14 +188,14 @@ void Controller::handleDirectionInd(std::unique_ptr<Event> e)
 {
     auto direction = payload<DirectionInd>(*e).direction;
 
-    if (perpendicular(m_currentDirection, direction)) {
-        m_currentDirection = direction;
+    if (perpendicular(m_SnakeSegments.m_currentDirection, direction)) {
+        m_SnakeSegments.m_currentDirection = direction;
     }
 }
 
 void Controller::updateFoodPosition(int x, int y, std::function<void()> clearPolicy)
 {
-    if (isSegmentAtPosition(x, y) || isPositionOutsideMap(x,y)) {
+    if (m_SnakeSegments.isSegmentAtPosition(x, y) || isPositionOutsideMap(x,y)) {
         m_foodPort.send(std::make_unique<EventT<FoodReq>>());
         return;
     }

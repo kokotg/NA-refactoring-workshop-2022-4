@@ -42,15 +42,16 @@ private:
 
     SnakeWorld m_SnakeWorld;
     SnakeSegments m_SnakeSegments;
-    Direction m_currentDirection;
+    //Direction m_currentDirection;
 
     void handleTimeoutInd();
     void handleDirectionInd(std::unique_ptr<Event>);
+
     void handleFoodInd(std::unique_ptr<Event>);
     void handleFoodResp(std::unique_ptr<Event>);
     void handlePauseInd(std::unique_ptr<Event>);
 
-    bool isSegmentAtPosition(int x, int y) const;
+    //bool isSegmentAtPosition(int x, int y) const;
     SnakeSegments::Segment calculateNewHead() const;
     void updateSegmentsIfSuccessfullMove(SnakeSegments::Segment const& newHead);
     void addHeadSegment(SnakeSegments::Segment const& newHead);
