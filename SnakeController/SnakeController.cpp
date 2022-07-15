@@ -64,11 +64,6 @@ Controller::Controller()
     //}
 }
 
-bool Controller::isSegmentAtPosition(int x, int y) const
-{
-    return segments.m_segments.end() !=  std::find_if(segments.m_segments.cbegin(), segments.m_segments.cend(),
-        [x, y](auto const& segment){ return segment.x == x and segment.y == y; });
-}
 
 namespace
 {
@@ -94,54 +89,7 @@ bool perpendicular(Direction dir1, Direction dir2)
 }
 } // namespace
 
-//segment
-SnakeSegments::Segment Controller::calculateNewHead() const
-{
-    SnakeSegments::Segment const& currentHead = segments.m_segments.front();
 
-    SnakeSegments::Segment newHead;
-    newHead.x = currentHead.x + (isHorizontal(segments.m_currentDirection) ? isPositive(segments.m_currentDirection) ? 1 : -1 : 0);
-    newHead.y = currentHead.y + (isVertical(segments.m_currentDirection) ? isPositive(segments.m_currentDirection) ? 1 : -1 : 0);
-
-    return newHead;
-}
-
-//sgment
-void Controller::removeTailSegment()
-{
-    auto tail = segments.m_segments.back();
-
-    DisplayInd l_evt;
-    l_evt.x = tail.x;
-    l_evt.y = tail.y;
-    l_evt.value = Cell_FREE;
-    world.m_displayPort.send(std::make_unique<EventT<DisplayInd>>(l_evt));
-
-    segments.m_segments.pop_back();
-}
-//segment
-void Controller::addHeadSegment(SnakeSegments::Segment const& newHead)
-{
-    segments.m_segments.push_front(newHead);
-
-    DisplayInd placeNewHead;
-    placeNewHead.x = newHead.x;
-    placeNewHead.y = newHead.y;
-    placeNewHead.value = Cell_SNAKE;
-
-    world.m_displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewHead));
-}
-
-//segment
-void Controller::updateSegmentsIfSuccessfullMove(SnakeSegments::Segment  const& newHead)
-{
-    if (isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
-        world.m_scorePort.send(std::make_unique<EventT<LooseInd>>());
-    } else {
-        addHeadSegment(newHead);
-        removeTailSegmentIfNotScored(newHead);
-    }
-}
 
 void Controller::handleTimeoutInd()
 {
@@ -156,7 +104,6 @@ void Controller::handleDirectionInd(std::unique_ptr<Event> e)
         segments.m_currentDirection = direction;
     }
 }
-
 
 
 void Controller::handleFoodInd(std::unique_ptr<Event> e)

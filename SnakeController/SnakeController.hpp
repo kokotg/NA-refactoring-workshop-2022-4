@@ -8,6 +8,7 @@
 #include "IEventHandler.hpp"
 #include "SnakeInterface.hpp"
 #include "SnakeWorld.hpp"
+#include "SnakeSegments.hpp"
 
 class Event;
 class IPort;
@@ -38,21 +39,6 @@ private:
 
     SnakeSegments segments;
     SnakeWorld world;
-    // IPort& m_displayPort;
-    // IPort& m_foodPort;
-    // IPort& m_scorePort;
-
-    // std::pair<int, int> m_mapDimension;
-    // std::pair<int, int> m_foodPosition;
-
-    // struct Segment
-    // {
-    //     int x;
-    //     int y;
-    // };
-
-    // std::list<Segment> m_segments;
-    // Direction m_currentDirection;
 
     void handleTimeoutInd();
     void handleDirectionInd(std::unique_ptr<Event>);
@@ -60,32 +46,12 @@ private:
     void handleFoodResp(std::unique_ptr<Event>);
     void handlePauseInd(std::unique_ptr<Event>);
 
-    bool isSegmentAtPosition(int x, int y) const;
-    SnakeSegments::Segment calculateNewHead() const;
-    void updateSegmentsIfSuccessfullMove(SnakeSegments::Segment const& newHead);
-    void addHeadSegment(SnakeSegments::Segment  const& newHead);
-    
-    void removeTailSegment();
+   
 
     
 
     bool m_paused;
 };
-
-class SnakeSegments
-{
-public:
-struct Segment
-    {
-        int x;
-        int y;
-    };
-
-    std::list<Segment> m_segments;
-    Direction m_currentDirection;
-    int score = 0;
-};
-
 
 
 } // namespace Snake
