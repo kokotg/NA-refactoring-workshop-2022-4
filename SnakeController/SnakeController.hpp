@@ -64,14 +64,10 @@ private:
     SnakeSegments::Segment calculateNewHead() const;
     void updateSegmentsIfSuccessfullMove(SnakeSegments::Segment const& newHead);
     void addHeadSegment(SnakeSegments::Segment  const& newHead);
-    void removeTailSegmentIfNotScored(SnakeSegments::Segment const& newHead);
+    
     void removeTailSegment();
 
-    bool isPositionOutsideMap(int x, int y) const;
-
-    void updateFoodPosition(int x, int y, std::function<void()> clearPolicy);
-    void sendClearOldFood();
-    void sendPlaceNewFood(int x, int y);
+    
 
     bool m_paused;
 };
