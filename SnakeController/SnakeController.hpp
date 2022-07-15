@@ -26,17 +26,35 @@ struct UnexpectedEventException : std::runtime_error
 class SnakeSegments : public IEventHandler
 {
 public:
+    SnakeSegments (std::string const& p_config)
+
+
+    void setLength ();
+    bool isSegmentAtPosition(int x, int y) const;
+    Segment calculateNewHead() const;
+    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
+    void addHeadSegment(Segment const& newHead);
+    void removeTailSegmentIfNotScored(Segment const& newHead);
+    void removeTailSegment();
+    std::string const& m_config;
 
 
 private:
 
+    struct Segment
+    {
+        int x;
+        int y;
+    };
+    std::list<Segment> m_segments;
+    Direction m_currentDirection;
 
 };
 
 class SnakeWorld : public IEventHandler
 {
 public:
-    SnakeWorld (IPort& p_foodPort);
+    SnakeWorld (IPort& p_displayPort, IPort& p_foodPort);
     void setMapDimension (int width, int height);
     void setFoodPosition(int foodX, int foodY);
     bool isPositionOutsideMap(int x, int y) const;
@@ -63,8 +81,8 @@ public:
     void receive(std::unique_ptr<Event> e) override;
 
 private:
-    SnakeWorld snakeWorld(IPort& m_displayPort, IPort& m_foodPort);
-    SnakeSegments snakeSegments();
+    SnakeWorld snakeWorld(m_displayPort, m_foodPort);
+    SnakeSegments snakeSegments(p_config);
     IPort& m_displayPort;
     IPort& m_foodPort;
     IPort& m_scorePort;
@@ -72,14 +90,14 @@ private:
     //std::pair<int, int> m_mapDimension;//
     //std::pair<int, int> m_foodPosition;//
 
-    struct Segment
-    {
-        int x;
-        int y;
-    };
+    // struct Segment
+    // {
+    //     int x;
+    //     int y;
+    // };
 
-    std::list<Segment> m_segments;
-    Direction m_currentDirection;
+    // std::list<Segment> m_segments;
+    // Direction m_currentDirection;
 
     void handleTimeoutInd();
     void handleDirectionInd(std::unique_ptr<Event>);
@@ -87,12 +105,12 @@ private:
     void handleFoodResp(std::unique_ptr<Event>);
     void handlePauseInd(std::unique_ptr<Event>);
 
-    bool isSegmentAtPosition(int x, int y) const;
-    Segment calculateNewHead() const;
-    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
-    void addHeadSegment(Segment const& newHead);
-    void removeTailSegmentIfNotScored(Segment const& newHead);
-    void removeTailSegment();
+    // bool isSegmentAtPosition(int x, int y) const;
+    // Segment calculateNewHead() const;
+    // void updateSegmentsIfSuccessfullMove(Segment const& newHead);
+    // void addHeadSegment(Segment const& newHead);
+    // void removeTailSegmentIfNotScored(Segment const& newHead);
+    // void removeTailSegment();
 
     bool isPositionOutsideMap(int x, int y) const;
 

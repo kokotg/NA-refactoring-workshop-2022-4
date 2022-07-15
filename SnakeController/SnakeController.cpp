@@ -16,9 +16,15 @@ UnexpectedEventException::UnexpectedEventException()
     : std::runtime_error("Unexpected event received!")
 {}
 
-SnakeWorld::SnakeWorld(IPort& p_foodPort) :
-    m_displayPort(p_foodPort),
+SnakeWorld::SnakeWorld(IPort& p_displayPort, IPort& p_foodPort) 
+    :
+    m_displayPort(p_displayPort),
     m_foodPort(p_foodPort) 
+{}
+
+SnakeSegments::SnakeSegments(std::string const& p_config)
+    :m_config(p_config)
+
 {}
 
 void SnakeWorld::setMapDimension(int width, int height)
@@ -72,13 +78,19 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
         istr >> length;
 
         while (length--) {
-            Segment seg;
-            istr >> seg.x >> seg.y;
-            m_segments.push_back(seg);
+            snakeSegments.setLength()
         }
     } else {
         throw ConfigurationError();
     }
+}
+
+void SnakeSegments::setLength()
+{
+        std::istringstream istr(m_config);
+        Segment seg;
+        istr >> seg.x >> seg.y;
+        m_segments.push_back(seg);
 }
 
 bool Controller::isSegmentAtPosition(int x, int y) const
