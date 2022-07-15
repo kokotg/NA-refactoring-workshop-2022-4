@@ -65,6 +65,7 @@ struct FoodResp
 
 struct ScoreInd
 {
+    int score = 0;
     static constexpr std::uint32_t MESSAGE_ID = 0x70;
 };
 
