@@ -23,6 +23,14 @@ struct UnexpectedEventException : std::runtime_error
     UnexpectedEventException();
 };
 
+class SnakeSegments{
+
+};
+
+class SnakeWorld{
+
+};
+
 class Controller : public IEventHandler
 {
 public:
@@ -32,6 +40,7 @@ public:
     Controller& operator=(Controller const& p_rhs) = delete;
 
     void receive(std::unique_ptr<Event> e) override;
+    int scoreIndication() { return m_segments.size(); }
 
 private:
     IPort& m_displayPort;

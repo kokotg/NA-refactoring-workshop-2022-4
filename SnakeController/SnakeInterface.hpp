@@ -63,9 +63,14 @@ struct FoodResp
     int y;
 };
 
-struct ScoreInd
+class ScoreInd
 {
+public:
+    // std::list<Segment> m_segments;
+    int a = scoreIndication(); //from Controller
+
     static constexpr std::uint32_t MESSAGE_ID = 0x70;
+
 };
 
 struct LooseInd
