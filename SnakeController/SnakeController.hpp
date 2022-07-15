@@ -7,6 +7,7 @@
 
 #include "IEventHandler.hpp"
 #include "SnakeInterface.hpp"
+#include "SnakeWorld.hpp"
 
 class Event;
 class IPort;
@@ -26,7 +27,7 @@ struct UnexpectedEventException : std::runtime_error
 class Controller : public IEventHandler
 {
 public:
-    Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort, std::string const& p_config);
+    Controller();
 
     Controller(Controller const& p_rhs) = delete;
     Controller& operator=(Controller const& p_rhs) = delete;
@@ -89,15 +90,6 @@ struct Segment
     int score = 0;
 };
 
-class SnakeWorld
-{
-    public:
-    IPort& m_displayPort;
-    IPort& m_foodPort;
-    IPort& m_scorePort;
 
-    std::pair<int, int> m_mapDimension;
-    std::pair<int, int> m_foodPosition;
-};
 
 } // namespace Snake
