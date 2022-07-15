@@ -158,7 +158,7 @@ void Controller::addHeadSegment(SnakeSegments::Segment const& newHead)
 void Controller::removeTailSegmentIfNotScored(SnakeSegments::Segment const& newHead)
 {
     if (std::make_pair(newHead.x, newHead.y) == m_SnakeWorld.m_foodPosition) {
-        m_scorePort.send(std::make_unique<EventT<ScoreInd>>(1,true));
+        m_scorePort.send(std::make_unique<EventT<ScoreInd>>(ScoreInd(1,true)));
         
         m_foodPort.send(std::make_unique<EventT<FoodReq>>());
     } else {
@@ -170,7 +170,7 @@ void Controller::updateSegmentsIfSuccessfullMove(SnakeSegments::Segment const& n
 {
     if (isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
         m_scorePort.send(std::make_unique<EventT<LooseInd>>());
-        m_scorePort.send(std::make_unique<EventT<ScoreInd>>(0,false));
+        m_scorePort.send(std::make_unique<EventT<ScoreInd>>(ScoreInd(0,false)));
     } else {
         addHeadSegment(newHead);
         removeTailSegmentIfNotScored(newHead);
