@@ -23,6 +23,22 @@ struct UnexpectedEventException : std::runtime_error
     UnexpectedEventException();
 };
 
+class SnakeWorld
+{
+    private:
+        IPort& m_foodPort;
+
+
+    public:
+      SnakeWorld(IPort& p_foodPort);
+
+    // getters
+        IPort& getFoodPort();
+
+};
+
+
+
 class Controller : public IEventHandler
 {
 public:
@@ -34,8 +50,9 @@ public:
     void receive(std::unique_ptr<Event> e) override;
 
 private:
+    std::unique_ptr<SnakeWorld> snakeWorld = nullptr;
+
     IPort& m_displayPort;
-    IPort& m_foodPort;
     IPort& m_scorePort;
 
     std::pair<int, int> m_mapDimension;
@@ -71,5 +88,7 @@ private:
 
     bool m_paused;
 };
+
+
 
 } // namespace Snake

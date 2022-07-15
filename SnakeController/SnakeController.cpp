@@ -16,12 +16,21 @@ UnexpectedEventException::UnexpectedEventException()
     : std::runtime_error("Unexpected event received!")
 {}
 
+
+SnakeWorld::SnakeWorld(IPort& p_foodPort):m_foodPort(p_foodPort)
+{}
+
+IPort& SnakeWorld::getFoodPort()
+{
+    return m_foodPort;
+}
+
 Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort, std::string const& p_config)
     : m_displayPort(p_displayPort),
-      m_foodPort(p_foodPort),
       m_scorePort(p_scorePort),
       m_paused(false)
 {
+    snakeWorld = std::make_unique<SnakeWorld>(p_foodPort);
     std::istringstream istr(p_config);
     char w, f, s, d;
 
@@ -159,7 +168,7 @@ void Controller::removeTailSegmentIfNotScored(Segment const& newHead)
 {
     if (std::make_pair(newHead.x, newHead.y) == m_foodPosition) {
         m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
-        m_foodPort.send(std::make_unique<EventT<FoodReq>>());
+        snakeWorld->getFoodPort().send(std::make_unique<EventT<FoodReq>>());
     } else {
         removeTailSegment();
     }
@@ -192,7 +201,7 @@ void Controller::handleDirectionInd(std::unique_ptr<Event> e)
 void Controller::updateFoodPosition(int x, int y, std::function<void()> clearPolicy)
 {
     if (isSegmentAtPosition(x, y) || isPositionOutsideMap(x,y)) {
-        m_foodPort.send(std::make_unique<EventT<FoodReq>>());
+        snakeWorld->getFoodPort().send(std::make_unique<EventT<FoodReq>>());
         return;
     }
 
