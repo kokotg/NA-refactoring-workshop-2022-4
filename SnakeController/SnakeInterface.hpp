@@ -67,7 +67,8 @@ class ScoreInd
 {
 public:
     // std::list<Segment> m_segments;
-    int a = scoreIndication(); //from Controller
+    // scoreIndication(); //from Controller
+    int scoreInt;
 
     static constexpr std::uint32_t MESSAGE_ID = 0x70;
 

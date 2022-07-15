@@ -23,12 +23,22 @@ struct UnexpectedEventException : std::runtime_error
     UnexpectedEventException();
 };
 
-class SnakeSegments{
+class SnakeSegments
+{
+    struct Segment
+    {
+        int x;
+        int y;
+    };
 
+    std::list<Segment> m_segments;
+    bool isSegmentAtPosition(int x, int y) const;
 };
 
-class SnakeWorld{
-
+class SnakeWorld
+{
+    std::pair<int, int> m_mapDimension;
+    std::pair<int, int> m_foodPosition;
 };
 
 class Controller : public IEventHandler
