@@ -1,12 +1,13 @@
 #pragma once
 
-#include <list>
 #include <memory>
 #include <stdexcept>
 #include <functional>
 
 #include "IEventHandler.hpp"
 #include "SnakeInterface.hpp"
+#include "SnakeSegments.hpp"
+#include "SnakeWorld.hpp"
 
 class Event;
 class IPort;
@@ -38,17 +39,7 @@ private:
     IPort& m_foodPort;
     IPort& m_scorePort;
 
-    std::pair<int, int> m_mapDimension;
-    std::pair<int, int> m_foodPosition;
-
-    struct Segment
-    {
-        int x;
-        int y;
-    };
-
-    std::list<Segment> m_segments;
-    Direction m_currentDirection;
+    
 
     void handleTimeoutInd();
     void handleDirectionInd(std::unique_ptr<Event>);
@@ -57,10 +48,10 @@ private:
     void handlePauseInd(std::unique_ptr<Event>);
 
     bool isSegmentAtPosition(int x, int y) const;
-    Segment calculateNewHead() const;
-    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
-    void addHeadSegment(Segment const& newHead);
-    void removeTailSegmentIfNotScored(Segment const& newHead);
+    SnakeSegments::Segment calculateNewHead() const;
+    void updateSegmentsIfSuccessfullMove(SnakeSegments::Segment const& newHead);
+    void addHeadSegment(SnakeSegments::Segment const& newHead);
+    void removeTailSegmentIfNotScored(SnakeSegments::Segment const& newHead);
     void removeTailSegment();
 
     bool isPositionOutsideMap(int x, int y) const;
@@ -70,6 +61,8 @@ private:
     void sendPlaceNewFood(int x, int y);
 
     bool m_paused;
+    SnakeSegments snakeSegments;
+    SnakeWorld snakeWorld;
 };
 
 } // namespace Snake
