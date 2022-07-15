@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "SnakeController.hpp"
+
 namespace Snake
 {
 
@@ -65,6 +67,7 @@ struct FoodResp
 
 struct ScoreInd
 {
+    int length;
     static constexpr std::uint32_t MESSAGE_ID = 0x70;
 };
 
