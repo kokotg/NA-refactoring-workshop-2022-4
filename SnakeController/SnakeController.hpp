@@ -23,6 +23,35 @@ struct UnexpectedEventException : std::runtime_error
     UnexpectedEventException();
 };
 
+class SnakeSegments : public IEventHandler
+{
+public:
+
+
+private:
+
+
+};
+
+class SnakeWorld : public IEventHandler
+{
+public:
+    SnakeWorld (IPort& p_foodPort);
+    void setMapDimension (int width, int height);
+    void setFoodPosition(int foodX, int foodY);
+    bool isPositionOutsideMap(int x, int y) const;
+    void sendPlaceNewFood(int x, int y);
+    void sendClearOldFood();
+
+private:
+
+    IPort& m_foodPort;
+    IPort& m_displayPort;
+    std::pair<int, int> m_mapDimension;
+    std::pair<int, int> m_foodPosition;
+
+};
+
 class Controller : public IEventHandler
 {
 public:
@@ -34,12 +63,14 @@ public:
     void receive(std::unique_ptr<Event> e) override;
 
 private:
+    SnakeWorld snakeWorld(IPort& m_displayPort, IPort& m_foodPort);
+    SnakeSegments snakeSegments();
     IPort& m_displayPort;
     IPort& m_foodPort;
     IPort& m_scorePort;
 
-    std::pair<int, int> m_mapDimension;
-    std::pair<int, int> m_foodPosition;
+    //std::pair<int, int> m_mapDimension;//
+    //std::pair<int, int> m_foodPosition;//
 
     struct Segment
     {
