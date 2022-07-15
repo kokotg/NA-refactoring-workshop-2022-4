@@ -21,7 +21,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
       m_foodPort(p_foodPort),
       m_scorePort(p_scorePort),
       segments(p_displayPort, p_foodPort, p_scorePort, p_config),
-      world(p_displayPort, p_foodPort)      
+      world(p_displayPort, p_foodPort),     
       m_paused(false)
 {
     std::istringstream istr(p_config);
@@ -36,6 +36,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
 
 //world.Load
     if(world.WorldLoad(istr) )
+    {
         istr >> d;
         switch (d) {
             case 'U':
@@ -56,7 +57,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
         istr >> length;
 
         while (length--) {
-            Segment seg;
+            segments.Segment seg;
             istr >> seg.x >> seg.y;
             m_segments.push_back(seg);
         }

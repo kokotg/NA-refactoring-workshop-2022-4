@@ -40,8 +40,8 @@ public:
     void removeTailSegment();
 
     int scoreIndication() { return m_segments.size(); }
-private:
 
+private:
     std::list<Segment> m_segments;
     bool isSegmentAtPosition(int x, int y) const;
 };
@@ -84,6 +84,7 @@ public:
 
     void receive(std::unique_ptr<Event> e) override;
     // int scoreIndication() { return m_segments.size(); } //now to SnakeSegment
+   bool m_paused;
 
 private:
     IPort& m_displayPort;
@@ -124,7 +125,7 @@ private:
     void sendClearOldFood();
     // void sendPlaceNewFood(int x, int y);
 
-    bool m_paused;
+ 
 };
 
 } // namespace Snake
