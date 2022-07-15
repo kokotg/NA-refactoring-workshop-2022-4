@@ -16,6 +16,29 @@ UnexpectedEventException::UnexpectedEventException()
     : std::runtime_error("Unexpected event received!")
 {}
 
+SnakeWorld::SnakeWorld(IPort& p_displayPort, IPort& p_foodPort) 
+    :
+    m_displayPort(p_displayPort),
+    m_foodPort(p_foodPort) 
+{}
+
+SnakeSegments::SnakeSegments(std::string const& p_config)
+    :m_config(p_config)
+
+{}
+
+void SnakeWorld::setMapDimension(int width, int height)
+{
+    m_foodPosition = std::make_pair(width, height);
+}
+
+void SnakeWorld::setFoodPosition(int foodX, int foodY)
+{
+    m_foodPosition = std::make_pair(foodX, foodY);
+}
+
+
+
 Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort, std::string const& p_config)
     : m_displayPort(p_displayPort),
       m_foodPort(p_foodPort),
@@ -30,8 +53,10 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
     istr >> w >> width >> height >> f >> foodX >> foodY >> s;
 
     if (w == 'W' and f == 'F' and s == 'S') {
-        m_mapDimension = std::make_pair(width, height);
-        m_foodPosition = std::make_pair(foodX, foodY);
+        //m_mapDimension = std::make_pair(width, height);//
+        //m_foodPosition = std::make_pair(foodX, foodY);//
+        snakeWorld.setMapDimension(width, height );
+        snakeWorld.setFsetFoodPosition(foodX, foodY);
 
         istr >> d;
         switch (d) {
@@ -53,13 +78,19 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
         istr >> length;
 
         while (length--) {
-            Segment seg;
-            istr >> seg.x >> seg.y;
-            m_segments.push_back(seg);
+            snakeSegments.setLength()
         }
     } else {
         throw ConfigurationError();
     }
+}
+
+void SnakeSegments::setLength()
+{
+        std::istringstream istr(m_config);
+        Segment seg;
+        istr >> seg.x >> seg.y;
+        m_segments.push_back(seg);
 }
 
 bool Controller::isSegmentAtPosition(int x, int y) const
@@ -69,11 +100,32 @@ bool Controller::isSegmentAtPosition(int x, int y) const
 }
 
 bool Controller::isPositionOutsideMap(int x, int y) const
+{   
+    return (snakeWorld.isPositionOutsideMap( x, y));   
+    //return x < 0 or y < 0 or x >= m_mapDimension.first or y >= m_mapDimension.second;
+}
+
+bool SnakeWorld::isPositionOutsideMap(int x, int y) const
 {
     return x < 0 or y < 0 or x >= m_mapDimension.first or y >= m_mapDimension.second;
 }
 
+
 void Controller::sendPlaceNewFood(int x, int y)
+{
+    
+    snakeWorld.sendPlaceNewFood(x, y);
+    // m_foodPosition = std::make_pair(x, y);
+
+    // DisplayInd placeNewFood;
+    // placeNewFood.x = x;
+    // placeNewFood.y = y;
+    // placeNewFood.value = Cell_FOOD;
+
+    // m_displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewFood));
+}
+
+void SnakeWorld::sendPlaceNewFood(int x, int y)
 {
     m_foodPosition = std::make_pair(x, y);
 
@@ -85,7 +137,7 @@ void Controller::sendPlaceNewFood(int x, int y)
     m_displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewFood));
 }
 
-void Controller::sendClearOldFood()
+void SnakeWorld::sendClearOldFood()
 {
     DisplayInd clearOldFood;
     clearOldFood.x = m_foodPosition.first;
@@ -93,6 +145,18 @@ void Controller::sendClearOldFood()
     clearOldFood.value = Cell_FREE;
 
     m_displayPort.send(std::make_unique<EventT<DisplayInd>>(clearOldFood));
+}
+
+void Controller::sendClearOldFood()
+{
+    snakeWorld.sendClearOldFood();
+    
+    // DisplayInd clearOldFood;
+    // clearOldFood.x = m_foodPosition.first;
+    // clearOldFood.y = m_foodPosition.second;
+    // clearOldFood.value = Cell_FREE;
+
+    // m_displayPort.send(std::make_unique<EventT<DisplayInd>>(clearOldFood));
 }
 
 namespace
