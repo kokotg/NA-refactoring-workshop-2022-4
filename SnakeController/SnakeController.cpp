@@ -17,11 +17,12 @@ UnexpectedEventException::UnexpectedEventException()
 {}
 
 Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort, std::string const& p_config)
-    : world.m_displayPort(p_displayPort),
-      world.m_foodPort(p_foodPort),
-      world.m_scorePort(p_scorePort),
-      world.m_paused(false)
 {
+    world.m_displayPort(p_displayPort);
+    world.m_foodPort(p_foodPort);
+    world.m_scorePort(p_scorePort);
+    bool m_paused(false);
+
     std::istringstream istr(p_config);
     char w, f, s, d;
 
@@ -56,6 +57,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
             SnakeSegments::Segment seg;
             istr >> seg.x >> seg.y;
             segments.m_segments.push_back(seg);
+            segments.score++;
         }
     } else {
         throw ConfigurationError();
@@ -121,11 +123,11 @@ bool perpendicular(Direction dir1, Direction dir2)
 
 SnakeSegments::Segment Controller::calculateNewHead() const
 {
-    Segment const& currentHead = m_segments.front();
+    SnakeSegments::Segment const& currentHead = segments.m_segments.front();
 
-    Segment newHead;
-    newHead.x = currentHead.x + (isHorizontal(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
-    newHead.y = currentHead.y + (isVertical(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
+    SnakeSegments::Segment newHead;
+    newHead.x = currentHead.x + (isHorizontal(segments.m_currentDirection) ? isPositive(segments.m_currentDirection) ? 1 : -1 : 0);
+    newHead.y = currentHead.y + (isVertical(segments.m_currentDirection) ? isPositive(segments.m_currentDirection) ? 1 : -1 : 0);
 
     return newHead;
 }
