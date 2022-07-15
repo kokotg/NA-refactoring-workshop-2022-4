@@ -143,6 +143,13 @@ void Controller::removeTailSegment()
     m_segments.pop_back();
 }
 
+void Controller::scoreIndication()
+{
+    ScoreInd score;
+    score.length = m_segments.size();
+    m_displayPort.send(std::make_unique<EventT<ScoreInd>>(score));
+}
+
 void Controller::addHeadSegment(Segment const& newHead)
 {
     m_segments.push_front(newHead);
