@@ -42,8 +42,8 @@ class SnakeWorld
     // setters
         void setMapDimension(std::pair<int, int> dim);
         void setFoodPosition(std::pair<int, int> pos);
-    
-    bool isPositionOutsideMap(int x, int y) const;
+    // other
+        bool isPositionOutsideMap(int x, int y) const;
 };
 
  struct Segment
@@ -66,7 +66,8 @@ class SnakeSegment
         void setSegments(std::list<Segment>& segments);
 
     // other
-     
+     bool isSegmentAtPosition(int x, int y) const;
+     Segment calculateNewHead(Direction &m_currentDirection) const;
 };
 
 
@@ -99,15 +100,11 @@ private:
     void handleFoodResp(std::unique_ptr<Event>);
     void handlePauseInd(std::unique_ptr<Event>);
 
-
-    Segment calculateNewHead() const;
     void updateSegmentsIfSuccessfullMove(Segment const& newHead);
     void addHeadSegment(Segment const& newHead);
     void removeTailSegmentIfNotScored(Segment const& newHead);
     void removeTailSegment();
 
-
-   bool isSegmentAtPosition(int x, int y) const;
     void updateFoodPosition(int x, int y, std::function<void()> clearPolicy);
     void sendClearOldFood();
     void sendPlaceNewFood(int x, int y);
