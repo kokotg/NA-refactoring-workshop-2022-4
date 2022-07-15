@@ -62,6 +62,7 @@ private:
     void addHeadSegment(Segment const& newHead);
     void removeTailSegmentIfNotScored(Segment const& newHead);
     void removeTailSegment();
+    void scoreIndication();
 
     bool isPositionOutsideMap(int x, int y) const;
 
