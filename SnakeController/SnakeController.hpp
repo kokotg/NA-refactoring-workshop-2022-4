@@ -23,6 +23,57 @@ struct UnexpectedEventException : std::runtime_error
     UnexpectedEventException();
 };
 
+class SnakeWorld
+{
+    private:
+        IPort& m_foodPort;
+        std::pair<int, int> m_mapDimension;
+        std::pair<int, int> m_foodPosition;
+
+
+    public:
+      SnakeWorld(IPort& p_foodPort);
+
+    // getters
+        IPort& getFoodPort();
+        std::pair<int, int> getMapDimension();
+        std::pair<int, int> getFoodPosition();
+
+    // setters
+        void setMapDimension(std::pair<int, int> dim);
+        void setFoodPosition(std::pair<int, int> pos);
+    // other
+        bool isPositionOutsideMap(int x, int y) const;
+};
+
+ struct Segment
+{   
+    int x;
+    int y;
+};
+
+class SnakeSegment
+{
+    private:
+        std::list<Segment> m_segments;
+
+
+    public:
+    // getters
+        std::list<Segment>& getSegments();
+
+    // setter
+        void setSegments(std::list<Segment>& segments);
+
+    // other
+     bool isSegmentAtPosition(int x, int y) const;
+     Segment calculateNewHead(Direction &m_currentDirection) const;
+};
+
+
+
+
+
 class Controller : public IEventHandler
 {
 public:
@@ -34,20 +85,13 @@ public:
     void receive(std::unique_ptr<Event> e) override;
 
 private:
+    std::unique_ptr<SnakeWorld> snakeWorld = nullptr;
+    std::unique_ptr<SnakeSegment> snakeSegment= nullptr;
+
     IPort& m_displayPort;
-    IPort& m_foodPort;
     IPort& m_scorePort;
 
-    std::pair<int, int> m_mapDimension;
-    std::pair<int, int> m_foodPosition;
 
-    struct Segment
-    {
-        int x;
-        int y;
-    };
-
-    std::list<Segment> m_segments;
     Direction m_currentDirection;
 
     void handleTimeoutInd();
@@ -56,14 +100,10 @@ private:
     void handleFoodResp(std::unique_ptr<Event>);
     void handlePauseInd(std::unique_ptr<Event>);
 
-    bool isSegmentAtPosition(int x, int y) const;
-    Segment calculateNewHead() const;
     void updateSegmentsIfSuccessfullMove(Segment const& newHead);
     void addHeadSegment(Segment const& newHead);
     void removeTailSegmentIfNotScored(Segment const& newHead);
     void removeTailSegment();
-
-    bool isPositionOutsideMap(int x, int y) const;
 
     void updateFoodPosition(int x, int y, std::function<void()> clearPolicy);
     void sendClearOldFood();
@@ -71,5 +111,7 @@ private:
 
     bool m_paused;
 };
+
+
 
 } // namespace Snake
