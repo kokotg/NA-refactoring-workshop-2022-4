@@ -65,7 +65,18 @@ struct FoodResp
 
 struct ScoreInd
 {
+    ScoreInd(int score, bool scoreRunning){
+
+        if (scoreRunning)
+        {
+            m_TotalScore+=score;
+        }
+        else
+        m_TotalScore = 0;
+
+    }
     static constexpr std::uint32_t MESSAGE_ID = 0x70;
+    int m_TotalScore{};
 };
 
 struct LooseInd
