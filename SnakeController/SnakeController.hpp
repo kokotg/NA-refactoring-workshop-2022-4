@@ -3,11 +3,11 @@
 #include <list>
 #include <memory>
 #include <stdexcept>
-#include <functional>
+//#include <functional>
 
 #include "IEventHandler.hpp"
 #include "SnakeInterface.hpp"
-//#include "SnakeWorld.hpp"
+#include "SnakeWorld.hpp"
 #include "SnakeSegments.hpp"
 
 class Event;
@@ -40,16 +40,7 @@ private:
     IPort& m_foodPort;
     IPort& m_scorePort;
 
-    std::pair<int, int> m_mapDimension;
-    std::pair<int, int> m_foodPosition;
-
-    // struct Segment
-    // {
-    //     int x;
-    //     int y;
-    // };
-
-    // std::list<Segment> m_segments;
+    SnakeWorld m_SnakeWorld;
     SnakeSegments m_SnakeSegments;
     Direction m_currentDirection;
 
