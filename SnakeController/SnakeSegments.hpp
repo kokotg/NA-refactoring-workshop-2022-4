@@ -15,6 +15,11 @@ class IPort;
 namespace Snake
 {
 
+struct ConfigurationError : std::logic_error
+{
+    ConfigurationError();
+};
+
 class SnakeSegments
 {
 public:
@@ -28,14 +33,9 @@ struct Segment
 
     std::list<Segment> m_segments;
     Direction m_currentDirection;
-    int score = 0;
 
     bool isSegmentAtPosition(int x, int y) const;
-    Segment calculateNewHead() const;
-    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
-    void addHeadSegment(Segment const& newHead);
-    
-    void removeTailSegment();
+
 };
 
 }

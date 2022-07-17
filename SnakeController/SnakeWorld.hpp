@@ -14,6 +14,9 @@ class IPort;
 
 namespace Snake
 {
+
+
+
 class SnakeWorld
 {
     public:
@@ -21,8 +24,6 @@ class SnakeWorld
     bool isPositionOutsideMap(int x, int y) const;
     void sendPlaceNewFood(int x, int y);
     void sendClearOldFood();
-    void removeTailSegmentIfNotScored(SnakeSegments::Segment const& newHead);
-    void updateFoodPosition(int x, int y, std::function<void()> clearPolicy);
 
     IPort& m_displayPort;
     IPort& m_foodPort;
