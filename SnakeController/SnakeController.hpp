@@ -7,6 +7,8 @@
 
 #include "IEventHandler.hpp"
 #include "SnakeInterface.hpp"
+#include "SnakeSegments.hpp"
+#include "SnakeWorld.hpp"
 
 class Event;
 class IPort;
@@ -34,6 +36,9 @@ public:
     void receive(std::unique_ptr<Event> e) override;
 
 private:
+    SnakeSegments snakeSegments;
+    SnakeWorld snakeWorld;
+
     IPort& m_displayPort;
     IPort& m_foodPort;
     IPort& m_scorePort;
@@ -57,10 +62,10 @@ private:
     void handlePauseInd(std::unique_ptr<Event>);
 
     bool isSegmentAtPosition(int x, int y) const;
-    Segment calculateNewHead() const;
-    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
-    void addHeadSegment(Segment const& newHead);
-    void removeTailSegmentIfNotScored(Segment const& newHead);
+    SnakeSegments::Segment calculateNewHead();
+    void updateSegmentsIfSuccessfullMove(SnakeSegments::Segment const& newHead);
+    void addHeadSegment(SnakeSegments::Segment const& newHead);
+    void removeTailSegmentIfNotScored(SnakeSegments::Segment const& newHead);
     void removeTailSegment();
 
     bool isPositionOutsideMap(int x, int y) const;
